@@ -6,7 +6,7 @@
 #include "readmatrix.h"
 #include <algorithm>
 #define WROW 1000000
-
+#define ROW 10000
 using namespace std;
 
 double insDistSum[WROW];
@@ -17,51 +17,91 @@ double silhouette[WROW];
 double silhouetteSum;
 double S;
 
-void InsDistSum() {
-	InsCoorSum();
-	for (int i = 0; i < m; i++) {
-		insDistSum[i] = insSum[i] + insSum[i + 1];// !!!!!!!!!!!!!! Ï Å Ð Å È Ì Å Í Î Â À Ò Ü   Ì À Ñ Ñ È Â!!!!!!!
-		//cout << insDistSum[i] << endl;
-	}
-}
-
-void OutDistSum() {
-	OutCoorSum();
-	for (int i = 0; i < m; i++) {
-		outDistSum[i] = outSum[i] + outSum[i + 1];// !!!!!!!!!!!!!! Ï Å Ð Å È Ì Å Í Î Â À Ò Ü   Ì À Ñ Ñ È Â!!!!!!!
-		//cout << outDistSum[i] << endl;
-	}
-}
-
 void CountA() {
-	InsDistSum();
-	//readClusters();
-	for (int i = 0; i < N; i++) {
-		a[i] = insSum[i] / (clusters[i] - 1);
-		//cout << a[i] << endl;
+	InsCoorSum();
+	double tempSum = 0;
+	int tempCount = 0;
+	int clusterNow = insSum[0][0];
+	int i = 0;
+	int countA = 0;
+	while (insSum[i][0] != 0)
+	{
+		if (insSum[i][0] == clusterNow)
+		{
+			tempSum += insSum[i][1];
+			tempCount++;
+		}
+		else
+		{
+			a[countA] = tempSum / tempCount;
+			countA++;
+			tempSum = insSum[i][1];
+			tempCount = 1;
+			clusterNow = insSum[i][0];
+		}
+		i++;
 	}
+	a[countA] = tempSum / tempCount;
 }
 void CountB() {
-	OutDistSum();
-	//readClusters();
-	for (int i = 0; i < N; i++) {
-		b[i] = outDistSum[i] / clusters[i];
-		//cout << b[i] << endl;
+	InsCoorSum();
+	int input = outSum[0][0];
+	int output = outSum[0][1];
+	double myArray[1000][10][2];
+	for (int i = 0; i < 1000; i++)
+		for (int j = 0; j < 10; j++)
+			for (int k = 0; k < 2; k++)
+				myArray[i][j][k] = 0;
+	int i = 0;
+	while (outSum[i][0] != 0)
+	{
+		myArray[(int)outSum[i][0] - 1][(int)outSum[i][1] - 1][0] += outSum[i][2];
+		myArray[(int)outSum[i][0] - 1][(int)outSum[i][1] - 1][1]++;
+		myArray[(int)outSum[i][1] - 1][(int)outSum[i][0] - 1][0] += outSum[i][2];
+		myArray[(int)outSum[i][1] - 1][(int)outSum[i][0] - 1][1]++;
+		i++;
 	}
-
+	for (int i = 0; i < 1000; i++)
+	{
+		for (int j = 0; j < 10; j++) {
+			if (j == i)
+				continue;
+			if (myArray[i][j][0] == 0)
+				break;
+			myArray[i][j][0] = myArray[i][j][0] / myArray[i][j][1];
+		}
+	}
+	for (int i = 0; i < 1000; i++)
+	{
+		double min = INFINITY;
+		for (int j = 0; j < 10; j++) {
+			if (j == i)
+				continue;
+			if (myArray[i][j][1] == 0)
+			{
+				break;
+			}
+			if (myArray[i][j][0] < min)
+				min = myArray[i][j][0];
+		}
+		b[i] = min;
+	}
 }
 void CountObjectSilhouette() {
 	readClusters();
 	CountA();
 	CountB();
-	for (int i = 0; i < num; i++) {
+	for (int i = 0; i < N; i++) {
 		silhouette[i] = (b[i] - a[i]) / max(a[i], b[i]);
+		//cout << silhouette[i] << endl;
 	}
 }
 void SumObjectSilhouette() {
 	CountObjectSilhouette();
-	for (int i = 0; i < num; i++) {
-		silhouetteSum = silhouette[i] + silhouette[i + 1];
+	silhouetteSum = 0;
+	for (int i = 0; i < N; i++) {
+		silhouetteSum += silhouette[i];
+		//cout << silhouetteSum << endl;
 	}
 }
 double Silhouette() {

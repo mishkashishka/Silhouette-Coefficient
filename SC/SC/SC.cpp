@@ -2,6 +2,7 @@
 #include <iostream>
 #include "silhouette.h"
 #include "distance.h"
+#include "readmatrix.h"
 
 using namespace std;
 
