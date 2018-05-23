@@ -6,11 +6,9 @@
 #include "readmatrix.h"
 #include <algorithm>
 #define WROW 1000000
-#define ROW 10000
+
 using namespace std;
 
-double insDistSum[WROW];
-double outDistSum[WROW];
 double a[WROW];
 double b[WROW];
 double silhouette[WROW];
@@ -44,7 +42,7 @@ void CountA() {
 	a[countA] = tempSum / tempCount;
 }
 void CountB() {
-	InsCoorSum();
+	OutCoorSum();
 	int input = outSum[0][0];
 	int output = outSum[0][1];
 	double myArray[1000][10][2];
@@ -93,7 +91,6 @@ void CountObjectSilhouette() {
 	CountB();
 	for (int i = 0; i < N; i++) {
 		silhouette[i] = (b[i] - a[i]) / max(a[i], b[i]);
-		//cout << silhouette[i] << endl;
 	}
 }
 void SumObjectSilhouette() {
@@ -101,12 +98,10 @@ void SumObjectSilhouette() {
 	silhouetteSum = 0;
 	for (int i = 0; i < N; i++) {
 		silhouetteSum += silhouette[i];
-		//cout << silhouetteSum << endl;
 	}
 }
 double Silhouette() {
 	SumObjectSilhouette();
-	readClusters();
 	S = silhouetteSum / N;
 	return S;
 }

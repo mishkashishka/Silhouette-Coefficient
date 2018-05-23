@@ -21,7 +21,6 @@ void readMatrix() {
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n + 1; j++) {
 			dataset >> matrix[i][j];
-		 // cout << matrix[i][j] << endl;
 		}
 	}
 	dataset.close();
@@ -30,9 +29,4 @@ void readClusters() {
 	ifstream cluster("clusters.txt");
 	assert(cluster.is_open());
 	cluster >> N; //количество кластеров
-	cluster >> num; //количество всех точек
-	for (int i = 0; i < N; i++) {
-		cluster >> clusters[i];
-	}
 }
-/*Нужно отредактировать, скорее всего, добавить в файл количество точек в каждом кластере*/
