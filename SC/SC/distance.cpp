@@ -3,8 +3,9 @@
 #include "readmatrix.h"
 #include "distance.h"
 #include <cmath>
-#define ROW 10000
-#define COL 1000
+#include <omp.h>
+#define ROW 1000000
+#define COL 10
 
 using namespace std;
 
@@ -17,8 +18,10 @@ void CoorDist() { //Считаем квадраты разности покоординатно
 	int countIns = 0;
 	int countOut = 0;
 	readMatrix();
+#pragma omp parallel for num_threads(1)
 	for (int i = 0; i < m; i++)
 	{
+#pragma omp parallel for num_threads(4)
 		for (int j = i + 1; j < m; j++)
 		{
 			if (matrix[i][0] == matrix[j][0]) {
@@ -61,9 +64,9 @@ void OutCoorSum() { // Складываем квадраты разности и получаем расстояние до объ
 	CoorDist();
 	int i = 0;
 	while (outDist[i][0] != 0) {
-		for (int j = 2; j <= n + 1; j++) {
-			outSum[i][2] += outDist[i][j];
-		}
+			for (int j = 2; j <= n + 1; j++) {
+				outSum[i][2] += outDist[i][j];
+			}
 		outSum[i][2] = sqrt(outSum[i][2]);
 		outSum[i][0] = outDist[i][0];
 		outSum[i][1] = outDist[i][1];

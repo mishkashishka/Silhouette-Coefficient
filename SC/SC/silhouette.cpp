@@ -5,6 +5,7 @@
 #include "silhouette.h"
 #include "readmatrix.h"
 #include <algorithm>
+#include <omp.h>
 #define WROW 1000000
 
 using namespace std;
@@ -24,20 +25,20 @@ void CountA() {
 	int countA = 0;
 	while (insSum[i][0] != 0)
 	{
-		if (insSum[i][0] == clusterNow)
-		{
-			tempSum += insSum[i][1];
-			tempCount++;
-		}
-		else
-		{
-			a[countA] = tempSum / tempCount;
-			countA++;
-			tempSum = insSum[i][1];
-			tempCount = 1;
-			clusterNow = insSum[i][0];
-		}
-		i++;
+			if (insSum[i][0] == clusterNow)
+			{
+				tempSum += insSum[i][1];
+				tempCount++;
+			}
+			else
+			{
+				a[countA] = tempSum / tempCount;
+				countA++;
+				tempSum = insSum[i][1];
+				tempCount = 1;
+				clusterNow = insSum[i][0];
+			}
+			i++;
 	}
 	a[countA] = tempSum / tempCount;
 }
@@ -46,10 +47,13 @@ void CountB() {
 	int input = outSum[0][0];
 	int output = outSum[0][1];
 	double myArray[1000][10][2];
-	for (int i = 0; i < 1000; i++)
-		for (int j = 0; j < 10; j++)
-			for (int k = 0; k < 2; k++)
-				myArray[i][j][k] = 0;
+#pragma omp parallel for schedule(static)
+		for (int i = 0; i < 1000; i++)
+#pragma omp parallel for schedule(static)
+			for (int j = 0; j < 10; j++)
+#pragma omp parallel for schedule(static)
+				for (int k = 0; k < 2; k++)
+					myArray[i][j][k] = 0;
 	int i = 0;
 	while (outSum[i][0] != 0)
 	{
@@ -69,6 +73,7 @@ void CountB() {
 			myArray[i][j][0] = myArray[i][j][0] / myArray[i][j][1];
 		}
 	}
+#pragma omp parallel for
 	for (int i = 0; i < 1000; i++)
 	{
 		double min = INFINITY;
@@ -89,6 +94,7 @@ void CountObjectSilhouette() {
 	readClusters();
 	CountA();
 	CountB();
+#pragma omp parallel for num_threads(2)
 	for (int i = 0; i < N; i++) {
 		silhouette[i] = (b[i] - a[i]) / max(a[i], b[i]);
 	}
@@ -96,12 +102,13 @@ void CountObjectSilhouette() {
 void SumObjectSilhouette() {
 	CountObjectSilhouette();
 	silhouetteSum = 0;
+#pragma omp parallel for reduction(+:silhouetteSum)
 	for (int i = 0; i < N; i++) {
 		silhouetteSum += silhouette[i];
 	}
 }
 double Silhouette() {
 	SumObjectSilhouette();
-	S = silhouetteSum / N;
+		S = silhouetteSum / N;
 	return S;
 }

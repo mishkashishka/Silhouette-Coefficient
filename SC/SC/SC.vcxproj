@@ -88,6 +88,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,8 +153,12 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="distance.cpp" />
-    <ClCompile Include="readmatrix.cpp" />
+    <ClCompile Include="distance.cpp">
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
+    </ClCompile>
+    <ClCompile Include="readmatrix.cpp">
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
+    </ClCompile>
     <ClCompile Include="SC.cpp" />
     <ClCompile Include="silhouette.cpp" />
     <ClCompile Include="stdafx.cpp">
