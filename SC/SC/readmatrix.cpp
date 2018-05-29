@@ -1,4 +1,4 @@
-#include "readmatrix.h"
+п»ї#include "readmatrix.h"
 #include "stdafx.h"
 #include "assert.h"
 #include <string>
@@ -17,19 +17,17 @@ int m, n, N;
 void readMatrix() {
 	ifstream dataset("input.txt");
 	assert(dataset.is_open());
-	dataset >> m; // количество точек
-	dataset >> n; // размерность пространаства
-#pragma omp parallel for num_threads(1)
+	dataset >> m; // РљРѕР»-РІРѕ С‚РѕС‡РµРє
+	dataset >> n; // Р Р°Р·РјРµСЂРЅРѕСЃС‚СЊ РїСЂ-РІР°
 	for (int i = 0; i < m; i++) {
-#pragma omp parallel for
-	for (int j = 0; j < n + 1; j++) {
-		dataset >> matrix[i][j];
-	}
+		for (int j = 0; j < n + 1; j++) {
+			dataset >> matrix[i][j];
+		}
 	}
 	dataset.close();
 }
 void readClusters() {
 	ifstream cluster("clusters.txt");
 	assert(cluster.is_open());
-	cluster >> N; //количество кластеров
+	cluster >> N; //РљРѕР»-РІРѕ РєР»Р°СЃС‚РµСЂРѕРІ
 }

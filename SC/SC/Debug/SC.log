@@ -1,2 +1,8 @@
 ﻿  distance.cpp
+  silhouette.cpp
+c:\код\silhouette-coefficient\sc\sc\silhouette.cpp(23): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+c:\код\silhouette-coefficient\sc\sc\silhouette.cpp(39): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+c:\код\silhouette-coefficient\sc\sc\silhouette.cpp(47): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+c:\код\silhouette-coefficient\sc\sc\silhouette.cpp(48): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+  Создание кода...
   SC.vcxproj -> C:\Код\Silhouette-Coefficient\SC\Debug\SC.exe
